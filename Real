@@ -1,0 +1,189 @@
+local webhookURL = ""
+local freq = 300
+local sendToWebhook = false
+local showCoins = false
+local showMult = false
+local showDiamonds = false
+local showRolls = false
+local freqChanged = false
+
+local function getStats()
+    local player = game:GetService("Players").LocalPlayer
+    local stats = {}
+
+    if showCoins then
+        local coinsGui = player.PlayerGui.Main.Top.Coins.Amount
+        if coinsGui then
+            table.insert(stats, {
+                ["name"] = "🪙 Coins",
+                ["value"] = coinsGui.Text,
+                ["inline"] = true
+            })
+        end
+    end
+    
+    if showMult then
+        local multGui = player.PlayerGui.Main.Top.Coins.Icon.Mult
+        if multGui then
+            table.insert(stats, {
+                ["name"] = "💸 Multiplier",
+                ["value"] = multGui.Text,
+                ["inline"] = true
+            })
+        end
+    end
+
+    if showDiamonds then
+        local diamondsGui = player.PlayerGui.Main.Top.Diamonds.Amount
+        if diamondsGui then
+            table.insert(stats, {
+                ["name"] = "💎 Diamonds",
+                ["value"] = diamondsGui.Text,
+                ["inline"] = true
+            })
+        end
+    end
+    
+    if showRolls then
+        local rollsStat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("🎲 Rolls")
+        if rollsStat then
+            table.insert(stats, {
+                ["name"] = "🎲 Rolls",
+                ["value"] = rollsStat.Value,
+                ["inline"] = true
+            })
+        end
+    end
+
+    return stats
+end
+
+local function sendWebhook()
+    if not sendToWebhook or webhookURL == "" then return end
+
+    local stats = getStats()
+
+    local embed = {
+        ["title"] = "Rinns Hub Pets Go",
+        ["description"] = "Today at " .. os.date("%I:%M %p"),
+        ["color"] = 16711680,
+        ["fields"] = stats,
+        ["footer"] = {
+            ["text"] = "Rinns Hub https://discord.gg/3jsa6zvs2X",
+            ["icon_url"] = "https://cdn.discordapp.com/icons/1046775262303494155/8196a5e833dbe7b11bcf50071ed3da55.webp?size=96"
+        }
+    }
+
+    local msg = {
+        ["embeds"] = {embed},
+        ["username"] = "Rinns Hub Data 🥇",
+        ["avatar_url"] = "https://cdn.discordapp.com/icons/1046775262303494155/8196a5e833dbe7b11bcf50071ed3da55.webp?size=96",
+    }
+
+    local request = http_request or request or HttpPost or syn.request
+    request({
+        Url = webhookURL,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json",
+        },
+        Body = game:GetService("HttpService"):JSONEncode(msg),
+    })
+end
+
+getgevn.WebhookLeftGroupBox:AddInput('WebhookURL', {
+    Text = 'Webhook URL',
+    Placeholder = 'Enter Webhook URL',
+    Default = "edge",
+    Callback = function(value)
+        webhookURL = value
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddButton({
+    Text = 'Test Webhook',
+    Func = function()
+        sendWebhook()
+    end,
+    DoubleClick = false,
+    Tooltip = 'Test the webhook'
+})
+
+getgevn.WebhookLeftGroupBox:AddInput('MessageFreq', {
+    Text = 'Frequency (Seconds)',
+    Placeholder = 'Time between messages (default: 300)',
+    Default = '300',
+    Numeric = true,
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            freq = num
+            freqChanged = true
+        end
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddToggle('SendToWebhook', {
+    Text = 'Enable Webhook',
+    Default = false,
+    Tooltip = 'Send data to webhook',
+    Callback = function(value)
+        sendToWebhook = value
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddToggle('ShowCoins', {
+    Text = 'Show Coins',
+    Default = false,
+    Tooltip = 'Display current coins',
+    Callback = function(value)
+        showCoins = value
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddToggle('ShowMult', {
+    Text = 'Show Multiplier',
+    Default = false,
+    Tooltip = 'Display coin multiplier',
+    Callback = function(value)
+        showMult = value
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddToggle('ShowDiamonds', {
+    Text = 'Show Diamonds',
+    Default = false,
+    Tooltip = 'Display current diamonds',
+    Callback = function(value)
+        showDiamonds = value
+    end
+})
+
+getgevn.WebhookLeftGroupBox:AddToggle('ShowRolls', {
+    Text = 'Show Rolls',
+    Default = false,
+    Tooltip = 'Display current rolls',
+    Callback = function(value)
+        showRolls = value
+    end
+})
+
+task.spawn(function()
+    while true do
+        if sendToWebhook then
+            sendWebhook()
+            local timer = freq
+            while timer > 0 do
+                if freqChanged then
+                    timer = freq
+                    freqChanged = false
+                end
+                task.wait(1)
+                timer = timer - 1
+            end
+        else
+            task.wait(1)
+        end
+    end
+end)
+
