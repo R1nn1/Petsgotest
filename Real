@@ -91,27 +91,27 @@ local function sendWebhook()
     })
 end
 
-getgevn.WebhookLeftGroupBox:AddInput('WebhookURL', {
-    Text = 'Webhook URL',
-    Placeholder = 'Enter Webhook URL',
-    Default = "edge",
+getgenv().WebhookLeftGroupBox:AddInput('WebhookURL', {
+    Text = 'Webhook Url',
+    Placeholder = 'Webhook Url',
+    Default = "The Webhook url to send messages to",
     Callback = function(value)
         webhookURL = value
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddButton({
+getgenv().WebhookLeftGroupBox:AddButton({
     Text = 'Test Webhook',
     Func = function()
         sendWebhook()
     end,
     DoubleClick = false,
-    Tooltip = 'Test the webhook'
+    Tooltip = 'Tests the webhook url'
 })
 
-getgevn.WebhookLeftGroupBox:AddInput('MessageFreq', {
-    Text = 'Frequency (Seconds)',
-    Placeholder = 'Time between messages (default: 300)',
+getgenv().WebhookLeftGroupBox:AddInput('MessageFreq', {
+    Text = 'Message Frequency (Seconds)',
+    Placeholder = 'Time between messages (defaul is 300)',
     Default = '300',
     Numeric = true,
     Callback = function(value)
@@ -123,46 +123,46 @@ getgevn.WebhookLeftGroupBox:AddInput('MessageFreq', {
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddToggle('SendToWebhook', {
-    Text = 'Enable Webhook',
+getgenv().WebhookLeftGroupBox:AddToggle('SendToWebhook', {
+    Text = 'Send Messages To Webhook',
     Default = false,
-    Tooltip = 'Send data to webhook',
+    Tooltip = 'Actually makes the script send messages to the webhook,
     Callback = function(value)
         sendToWebhook = value
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddToggle('ShowCoins', {
-    Text = 'Show Coins',
+getgenv().WebhookLeftGroupBox:AddToggle('ShowCoins', {
+    Text = 'Show Coins In Message',
     Default = false,
-    Tooltip = 'Display current coins',
+    Tooltip = 'Shows Your Coins In The Webhook Messages',
     Callback = function(value)
         showCoins = value
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddToggle('ShowMult', {
-    Text = 'Show Multiplier',
+getgenv().WebhookLeftGroupBox:AddToggle('ShowMult', {
+    Text = 'Show Coin Multiplier In Message',
     Default = false,
-    Tooltip = 'Display coin multiplier',
+    Tooltip = 'Shows Your coin multiplier in the webhook message',
     Callback = function(value)
         showMult = value
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddToggle('ShowDiamonds', {
-    Text = 'Show Diamonds',
+getgenv().WebhookLeftGroupBox:AddToggle('ShowDiamonds', {
+    Text = 'Show Diamonds In Message',
     Default = false,
-    Tooltip = 'Display current diamonds',
+    Tooltip = 'Shows Your Diamonds In The Webhook Message',
     Callback = function(value)
         showDiamonds = value
     end
 })
 
-getgevn.WebhookLeftGroupBox:AddToggle('ShowRolls', {
-    Text = 'Show Rolls',
+getgenv().WebhookLeftGroupBox:AddToggle('ShowRolls', {
+    Text = 'Show Rolls In Message',
     Default = false,
-    Tooltip = 'Display current rolls',
+    Tooltip = 'Shows Your Rolls In The Webhook Message',
     Callback = function(value)
         showRolls = value
     end
